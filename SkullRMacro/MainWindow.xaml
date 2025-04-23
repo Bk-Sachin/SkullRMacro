@@ -1,0 +1,755 @@
+﻿<Window x:Class="SkullRMacro.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SkullRMacro"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        mc:Ignorable="d"
+        Title="SkullRMacro"
+        Height="600" Width="1100"
+        WindowStyle="None" AllowsTransparency="True" Background="Transparent"
+        WindowStartupLocation="CenterScreen"
+        Foreground="White"
+        FontFamily="Segoe UI Variable Display, Segoe UI">
+
+    <Window.Resources>
+        <SolidColorBrush x:Key="PrimaryBackgroundColor" Color="#FF1A1A1A"/>
+        <SolidColorBrush x:Key="SecondaryBackgroundColor" Color="#FF252525"/>
+        <SolidColorBrush x:Key="TertiaryBackgroundColor" Color="#FF333333"/>
+        <SolidColorBrush x:Key="AccentColorBrush" Color="Red"/>
+        <SolidColorBrush x:Key="BorderColorBrush" Color="#FF555555"/>
+        <SolidColorBrush x:Key="TextPrimaryColorBrush" Color="White"/>
+        <SolidColorBrush x:Key="TextSecondaryColorBrush" Color="LightGray"/>
+        <SolidColorBrush x:Key="TextDisabledColorBrush" Color="Gray"/>
+        <SolidColorBrush x:Key="ButtonPressedBackgroundBrush" Color="#FF4F0000"/>
+        <SolidColorBrush x:Key="ButtonHoverBackgroundBrush" Color="#44FF0000"/>
+
+        <sys:Double x:Key="FontSizeSmall">10</sys:Double>
+        <sys:Double x:Key="FontSizeNormal">12</sys:Double>
+        <sys:Double x:Key="FontSizeLarge">16</sys:Double>
+        <sys:Double x:Key="FontSizeHeader">24</sys:Double>
+
+        <Style TargetType="Button" x:Key="BaseButtonStyle">
+            <Setter Property="Background" Value="{StaticResource SecondaryBackgroundColor}"/>
+            <Setter Property="Foreground" Value="{StaticResource TextPrimaryColorBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource AccentColorBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="8,4"/>
+            <Setter Property="Margin" Value="2"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="3">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="{TemplateBinding Padding}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="{StaticResource ButtonHoverBackgroundBrush}"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="White"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="{StaticResource ButtonPressedBackgroundBrush}"/>
+                                <Setter Property="Foreground" Value="{StaticResource TextSecondaryColorBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="border" Property="Opacity" Value="0.6"/>
+                                <Setter Property="Foreground" Value="{StaticResource TextDisabledColorBrush}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="Button" x:Key="TopNavButton" BasedOn="{StaticResource BaseButtonStyle}">
+            <Setter Property="Padding" Value="15,8"/>
+            <Setter Property="FontSize" Value="{StaticResource FontSizeLarge}"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="BorderThickness" Value="0,0,0,2"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="{TemplateBinding Padding}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="BorderBrush" Value="{StaticResource AccentColorBrush}"/>
+                                <Setter Property="Foreground" Value="{StaticResource AccentColorBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Foreground" Value="DarkRed"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="Button" x:Key="WindowControlButton" BasedOn="{StaticResource BaseButtonStyle}">
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Width" Value="35"/>
+            <Setter Property="Height" Value="35"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" Background="Transparent" BorderThickness="0" CornerRadius="3">
+                            <Viewbox Width="12" Height="12">
+                                <ContentPresenter/>
+                            </Viewbox>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="{StaticResource ButtonHoverBackgroundBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="{StaticResource ButtonPressedBackgroundBrush}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style TargetType="Button" x:Key="CloseButtonStyle" BasedOn="{StaticResource WindowControlButton}">
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="Red"/>
+                    <Setter Property="Foreground" Value="White"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="DarkRed"/>
+                    <Setter Property="Foreground" Value="White"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style TargetType="Button" x:Key="KeyboardButtonStyle" BasedOn="{StaticResource BaseButtonStyle}">
+            <Setter Property="MinWidth" Value="40"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="FontSize" Value="{StaticResource FontSizeNormal}"/>
+            <Setter Property="Padding" Value="5"/>
+            <Setter Property="Margin" Value="1.5"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderColorBrush}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="3">
+                            <TextBlock Text="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{TemplateBinding Foreground}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource AccentColorBrush}"/>
+                                <Setter Property="Foreground" Value="{StaticResource AccentColorBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="{StaticResource ButtonPressedBackgroundBrush}"/>
+                                <Setter Property="Foreground" Value="White"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="Red"/>
+                            </Trigger>
+                            <DataTrigger Binding="{Binding Content, RelativeSource={RelativeSource Self}}" Value="C">
+                                <Setter TargetName="border" Property="BorderBrush" Value="Red"/>
+                                <Setter TargetName="border" Property="BorderThickness" Value="2"/>
+                                <Setter Property="Foreground" Value="Red"/>
+                            </DataTrigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="ToggleButton" x:Key="SwitchToggleButtonStyle">
+            <Setter Property="Background" Value="DarkGray"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderColorBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Width" Value="50"/>
+            <Setter Property="Height" Value="25"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToggleButton">
+                        <Grid>
+                            <Border x:Name="BackgroundBorder" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="12"/>
+                            <Ellipse x:Name="Thumb" Fill="{StaticResource SecondaryBackgroundColor}" Stroke="{StaticResource BorderColorBrush}" StrokeThickness="1" Width="21" Height="21" HorizontalAlignment="Left" Margin="2,0,0,0">
+                                <Ellipse.RenderTransform>
+                                    <TranslateTransform X="0" />
+                                </Ellipse.RenderTransform>
+                            </Ellipse>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="BackgroundBorder" Property="Background" Value="{StaticResource AccentColorBrush}"/>
+                                <Setter TargetName="Thumb" Property="HorizontalAlignment" Value="Right"/>
+                                <Setter TargetName="Thumb" Property="Fill" Value="White"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="BackgroundBorder" Property="BorderBrush" Value="White"/>
+                                <Setter TargetName="Thumb" Property="Stroke" Value="White"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.6"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="RadioButton" x:Key="ProfileRadioButton" BasedOn="{StaticResource BaseButtonStyle}">
+            <Setter Property="MinWidth" Value="30"/>
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderColorBrush}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="RadioButton">
+                        <Border x:Name="border" Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="3">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="{StaticResource AccentColorBrush}"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="White"/>
+                                <Setter Property="Foreground" Value="White"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="{StaticResource ButtonHoverBackgroundBrush}"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="White"/>
+                            </Trigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsMouseOver" Value="True"/>
+                                    <Condition Property="IsChecked" Value="True"/>
+                                </MultiTrigger.Conditions>
+                                <Setter Property="Background" Value="{StaticResource AccentColorBrush}"/>
+                                <Setter Property="BorderBrush" Value="White"/>
+                            </MultiTrigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="{StaticResource ButtonPressedBackgroundBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.6"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="Button" x:Key="SmallIconButton" BasedOn="{StaticResource BaseButtonStyle}">
+            <Setter Property="MinWidth" Value="30"/>
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Padding" Value="5"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderColorBrush}"/>
+        </Style>
+
+        <!-- New Colors for Detailed Mouse -->
+        <SolidColorBrush x:Key="MouseLMBColor" Color="#FF00BFFF"/>
+        <!-- DeepSkyBlue -->
+        <SolidColorBrush x:Key="MouseRMBColor" Color="#FF191970"/>
+        <!-- MidnightBlue -->
+        <SolidColorBrush x:Key="MouseScrollClickColor" Color="#FF7FFF00"/>
+        <!-- Chartreuse / Bright Green -->
+        <SolidColorBrush x:Key="MouseScrollUpColor" Color="#FFFFFF00"/>
+        <!-- Yellow -->
+        <SolidColorBrush x:Key="MouseScrollDownColor" Color="#FFFF8C00"/>
+        <!-- DarkOrange -->
+
+    </Window.Resources>
+
+    <Grid>
+        <Border Background="{StaticResource PrimaryBackgroundColor}" CornerRadius="10" BorderBrush="{StaticResource BorderColorBrush}" BorderThickness="1">
+            <Grid x:Name="MainContentGrid">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <Grid x:Name="TopBarGrid" Grid.Row="0" MinHeight="60" Margin="10,0,10,0" Background="Transparent" MouseLeftButtonDown="Window_MouseLeftButtonDown">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                        <Button x:Name="EditorButton" Content="Editor" Style="{StaticResource TopNavButton}" Click="EditorButton_Click"/>
+                        <Button x:Name="MacrosButton" Content="Macros" Style="{StaticResource TopNavButton}" Click="MacrosButton_Click"/>
+                    </StackPanel>
+
+                    <Viewbox Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" MaxHeight="40" Margin="10,0">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="«" Foreground="Red" FontSize="30" VerticalAlignment="Center" Margin="0,0,10,0" Opacity="0.5" FontWeight="Bold"/>
+                            <Viewbox MaxHeight="40">
+                                <TextBlock Text="SkullRMacro" Foreground="{StaticResource TextPrimaryColorBrush}" FontWeight="Bold" FontSize="{StaticResource FontSizeHeader}"/>
+                            </Viewbox>
+                            <TextBlock Text="»" Foreground="Red" FontSize="30" VerticalAlignment="Center" Margin="10,0,0,0" Opacity="0.5" FontWeight="Bold"/>
+                        </StackPanel>
+                    </Viewbox>
+
+                    <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                        <Button x:Name="SettingsButton" Content="⚙" Style="{StaticResource WindowControlButton}" Click="SettingsButton_Click" ToolTip="Settings"/>
+                        <Button x:Name="MinimizeButton" Content="-" Style="{StaticResource WindowControlButton}" Click="MinimizeButton_Click" ToolTip="Minimize"/>
+                        <Button x:Name="CloseButton" Content="✕" Style="{StaticResource CloseButtonStyle}" Click="CloseButton_Click" ToolTip="Close"/>
+                    </StackPanel>
+                </Grid>
+
+                <Border Grid.Row="1" Margin="10,5,10,5" BorderBrush="{StaticResource AccentColorBrush}" BorderThickness="1" CornerRadius="5">
+                    <Grid >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="3*"/>
+                            <ColumnDefinition Width="1*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Border Grid.Column="0" Padding="5">
+                            <!-- Keyboard Area -->
+                            <Grid x:Name="KeyboardGrid" HorizontalAlignment="Left" VerticalAlignment="Top"
+                                  ButtonBase.Click="KeyboardButton_Click" Height="229" Width="699" Margin="39,92,0,0">
+
+                                <Grid.Resources>
+                                    <!-- Uniform 36x36 Key Style -->
+                                    <Style TargetType="Button" BasedOn="{StaticResource KeyboardButtonStyle}">
+                                        <Setter Property="Width" Value="36"/>
+                                        <!-- Explicit Size -->
+                                        <Setter Property="Height" Value="36"/>
+                                        <!-- Explicit Size -->
+                                        <Setter Property="MinWidth" Value="0"/>
+                                        <!-- Remove Min constraints -->
+                                        <Setter Property="MinHeight" Value="0"/>
+                                        <Setter Property="FontSize" Value="10"/>
+                                        <Setter Property="Padding" Value="1"/>
+                                        <!-- Minimal padding -->
+                                        <Setter Property="Margin" Value="1"/>
+                                        <!-- Minimal margin -->
+                                        <Setter Property="HorizontalAlignment" Value="Center"/>
+                                        <!-- Center fixed-size keys -->
+                                        <Setter Property="VerticalAlignment" Value="Center"/>
+                                        <!-- Template remains the same -->
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="Button">
+                                                    <Border x:Name="border" Background="{TemplateBinding Background}"
+                                                            BorderBrush="{TemplateBinding BorderBrush}"
+                                                            BorderThickness="1"
+                                                            CornerRadius="2">
+                                                        <!-- Ensure TextBlock fits -->
+                                                        <Viewbox MaxHeight="20" MaxWidth="30">
+                                                            <TextBlock Text="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{TemplateBinding Foreground}" FontSize="{TemplateBinding FontSize}"/>
+                                                        </Viewbox>
+                                                    </Border>
+                                                    <ControlTemplate.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource AccentColorBrush}"/>
+                                                            <Setter Property="Foreground" Value="{StaticResource AccentColorBrush}"/>
+                                                        </Trigger>
+                                                        <Trigger Property="IsPressed" Value="True">
+                                                            <Setter TargetName="border" Property="Background" Value="{StaticResource ButtonPressedBackgroundBrush}"/>
+                                                            <Setter Property="Foreground" Value="White"/>
+                                                            <Setter TargetName="border" Property="BorderBrush" Value="Red"/>
+                                                        </Trigger>
+                                                    </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                    <!-- Specific style for Spacebar to override height and allow stretching -->
+                                    <Style TargetType="Button" x:Key="SpacebarStyle" BasedOn="{StaticResource KeyboardButtonStyle}">
+                                        <Setter Property="Height" Value="36"/>
+                                        <!-- Match height -->
+                                        <Setter Property="Width" Value="Auto"/>
+                                        <!-- Allow stretching -->
+                                        <Setter Property="MinWidth" Value="180"/>
+                                        <!-- Give it a reasonable minimum -->
+                                        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                                        <Setter Property="FontSize" Value="10"/>
+                                        <Setter Property="Padding" Value="1"/>
+                                        <Setter Property="Margin" Value="1"/>
+                                        <!-- Template is inherited, fine for spacebar -->
+                                    </Style>
+                                </Grid.Resources>
+
+                                <!-- Define Columns - Simplified, enough for key count + gaps -->
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <!-- Col 0 -->
+                                    <ColumnDefinition Width="38"/>
+                                    <!-- Gap 1 -->
+                                    <!-- Col 2 -->
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <!-- Col 5 -->
+                                    <ColumnDefinition Width="Auto" MinWidth="5"/>
+                                    <!-- Gap 6 -->
+                                    <ColumnDefinition Width="Auto"/>
+                                    <!-- Col 7 -->
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <!-- Col 10 -->
+                                    <ColumnDefinition Width="Auto" MinWidth="5"/>
+                                    <!-- Gap 11 -->
+                                    <ColumnDefinition Width="Auto"/>
+                                    <!-- Col 12 -->
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <!-- Col 15 -->
+                                    <ColumnDefinition Width="Auto" MinWidth="10"/>
+                                    <!-- Gap 16 -->
+                                    <ColumnDefinition Width="Auto"/>
+                                    <!-- Col 17 -->
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <!-- Col 19 -->
+                                    <ColumnDefinition Width="Auto" MinWidth="5"/>
+                                    <!-- Gap 20 -->
+                                    <ColumnDefinition Width="Auto"/>
+                                    <!-- Col 21 -->
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <!-- Col 24 -->
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Define Rows -->
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <!-- Place Keys - All ColumnSpan=1, RowSpan=1 (Except Spacebar) -->
+
+                                <!-- Row 0 -->
+                                <Button x:Name="KeyEsc" Content="Esc"/>
+                                <Button Grid.Column="1" x:Name="KeyF1" Content="F1"/>
+                                <Button Grid.Column="2" x:Name="KeyF2" Content="F2"/>
+                                <Button Grid.Column="3" x:Name="KeyF3" Content="F3"/>
+                                <Button Grid.Column="4" x:Name="KeyF4" Content="F4"/>
+                                <Button Grid.Column="6" x:Name="KeyF5" Content="F5"/>
+                                <Button Grid.Column="7" x:Name="KeyF6" Content="F6"/>
+                                <Button Grid.Column="8" x:Name="KeyF7" Content="F7"/>
+                                <Button Grid.Column="9" x:Name="KeyF8" Content="F8"/>
+                                <Button Grid.Column="11" x:Name="KeyF9" Content="F9"/>
+                                <Button Grid.Column="12" x:Name="KeyF10" Content="F10"/>
+                                <Button Grid.Column="13" x:Name="KeyF11" Content="F11"/>
+                                <Button Grid.Column="14" x:Name="KeyF12" Content="F12"/>
+                                <Button Grid.Column="15" x:Name="KeyPrtSc" Content="PrtS" Height="36" Width="36"/>
+                                <Button Grid.Column="16" x:Name="KeyScrLk" Content="Scr" Height="36" Width="36"/>
+                                <Button Grid.Column="14" x:Name="KeyPause" Content="Pau" Height="36" Width="36" Grid.Row="4"/>
+
+                                <!-- Row 1 -->
+                                <Button Grid.Row="1" x:Name="KeyTilde" Content="`"/>
+                                <Button Grid.Row="1" Grid.Column="1" x:Name="Key1" Content="1"/>
+                                <Button Grid.Row="1" Grid.Column="2" x:Name="Key2" Content="2"/>
+                                <Button Grid.Row="1" Grid.Column="3" x:Name="Key3" Content="3"/>
+                                <Button Grid.Row="1" Grid.Column="4" x:Name="Key4" Content="4"/>
+                                <Button Grid.Row="1" Grid.Column="6" x:Name="Key5" Content="5"/>
+                                <Button Grid.Row="1" Grid.Column="7" x:Name="Key6" Content="6"/>
+                                <Button Grid.Row="1" Grid.Column="8" x:Name="Key7" Content="7"/>
+                                <Button Grid.Row="1" Grid.Column="9" x:Name="Key8" Content="8"/>
+                                <Button Grid.Row="1" Grid.Column="11" x:Name="Key9" Content="9"/>
+                                <Button Grid.Row="1" Grid.Column="12" x:Name="Key0" Content="0"/>
+                                <Button Grid.Row="1" Grid.Column="13" x:Name="KeyMinus" Content="-"/>
+                                <Button Grid.Row="1" Grid.Column="14" x:Name="KeyEquals" Content="="/>
+                                <Button Grid.Row="1" Grid.Column="15" x:Name="KeyBackspace" Content="Bac"/>
+                                <!-- Now standard size -->
+                                <Button Grid.Column="17" x:Name="KeyIns" Content="Ins"/>
+                                <Button Grid.Column="18" x:Name="KeyHome" Content="Ho"/>
+                                <Button Grid.Column="20" x:Name="KeyPgUp" Content="PgU"/>
+                                <Button Grid.Row="1" Grid.Column="16" x:Name="KeyNumLock" Content="Nu"/>
+                                <Button Grid.Row="2" Grid.Column="20" x:Name="KeyNumDivide" Content="/"/>
+                                <Button Grid.Row="3" Grid.Column="20" x:Name="KeyNumMultiply" Content="*"/>
+                                <Button Grid.Row="4" Grid.Column="20" x:Name="KeyNumMinus" Content="-"/>
+
+                                <!-- Row 2 -->
+                                <Button Grid.Row="2" x:Name="KeyTab" Content="Tab"/>
+                                <!-- Now standard size -->
+                                <Button Grid.Row="2" Grid.Column="1" x:Name="KeyQ" Content="Q"/>
+                                <Button Grid.Row="2" Grid.Column="2" x:Name="KeyW" Content="W"/>
+                                <Button Grid.Row="2" Grid.Column="3" x:Name="KeyE" Content="E"/>
+                                <Button Grid.Row="2" Grid.Column="4" x:Name="KeyR" Content="R"/>
+                                <Button Grid.Row="2" Grid.Column="6" x:Name="KeyT" Content="T"/>
+                                <Button Grid.Row="2" Grid.Column="7" x:Name="KeyY" Content="Y"/>
+                                <Button Grid.Row="2" Grid.Column="8" x:Name="KeyU" Content="U"/>
+                                <Button Grid.Row="2" Grid.Column="9" x:Name="KeyI" Content="I"/>
+                                <Button Grid.Row="2" Grid.Column="11" x:Name="KeyO" Content="O"/>
+                                <Button Grid.Row="2" Grid.Column="12" x:Name="KeyP" Content="P"/>
+                                <Button Grid.Row="2" Grid.Column="13" x:Name="KeyLBracket" Content="["/>
+                                <Button Grid.Row="2" Grid.Column="14" x:Name="KeyRBracket" Content="]"/>
+                                <Button Grid.Row="2" Grid.Column="15" x:Name="KeyBackslash" Content="\"/>
+                                <!-- Now standard size -->
+                                <Button Grid.Row="1" Grid.Column="17" x:Name="KeyDel" Content="Del"/>
+                                <Button Grid.Row="1" Grid.Column="18" x:Name="KeyEnd" Content="End"/>
+                                <Button Grid.Row="1" Grid.Column="20" x:Name="KeyPgDn" Content="PgD"/>
+                                <Button Grid.Row="2" Grid.Column="16" x:Name="KeyNum7" Content="7"/>
+                                <Button Grid.Row="2" Grid.Column="17" x:Name="KeyNum8" Content="8"/>
+                                <Button Grid.Row="2" Grid.Column="18" x:Name="KeyNum9" Content="9"/>
+                                <Button Grid.Row="5" Grid.Column="20" x:Name="KeyNumPlus" Content="+"/>
+                                <!-- Standard size -->
+
+                                <!-- Row 3 -->
+                                <Button Grid.Row="3" x:Name="KeyCaps" Content="Cap"/>
+                                <!-- Now standard size -->
+                                <Button Grid.Row="3" Grid.Column="1" x:Name="KeyA" Content="A"/>
+                                <Button Grid.Row="3" Grid.Column="2" x:Name="KeyS" Content="S"/>
+                                <Button Grid.Row="3" Grid.Column="3" x:Name="KeyD" Content="D"/>
+                                <Button Grid.Row="3" Grid.Column="4" x:Name="KeyF" Content="F"/>
+                                <Button Grid.Row="3" Grid.Column="6" x:Name="KeyG" Content="G"/>
+                                <Button Grid.Row="3" Grid.Column="7" x:Name="KeyH" Content="H"/>
+                                <Button Grid.Row="3" Grid.Column="8" x:Name="KeyJ" Content="J"/>
+                                <Button Grid.Row="3" Grid.Column="9" x:Name="KeyK" Content="K"/>
+                                <Button Grid.Row="3" Grid.Column="11" x:Name="KeyL" Content="L"/>
+                                <Button Grid.Row="3" Grid.Column="12" x:Name="KeySemicolon" Content=";"/>
+                                <Button Grid.Row="3" Grid.Column="13" x:Name="KeyApostrophe" Content="'"/>
+                                <Button Grid.Row="3" Grid.Column="14" x:Name="KeyEnter" Content="Enter" Height="36" Width="74" Grid.ColumnSpan="2"/>
+                                <!-- Keep Enter wider? Or make size 1? Let's try 1 for now based on req -->
+                                <Button Grid.Row="3" Grid.Column="16" x:Name="KeyNum4" Content="4"/>
+                                <Button Grid.Row="3" Grid.Column="17" x:Name="KeyNum5" Content="5"/>
+                                <Button Grid.Row="3" Grid.Column="18" x:Name="KeyNum6" Content="6"/>
+
+                                <!-- Row 4 -->
+                                <Button Grid.Row="4" x:Name="KeyLShift" Content="Shift" Height="36" Width="36"/>
+                                <!-- Keep Shift wider? Try 1 -->
+                                <Button Grid.Row="4" Grid.Column="1" x:Name="KeyZ" Content="Z" Height="36" Width="36"/>
+                                <Button Grid.Row="4" Grid.Column="2" x:Name="KeyX" Content="X" Height="36" Width="36"/>
+                                <Button Grid.Row="4" Grid.Column="3" x:Name="KeyC" Content="C" Height="36" Width="36"/>
+                                <Button Grid.Row="4" Grid.Column="4" x:Name="KeyV" Content="V" Height="36" Width="36"/>
+                                <Button Grid.Row="4" Grid.Column="6" x:Name="KeyB" Content="B" Height="36" Width="36"/>
+                                <Button Grid.Row="4" Grid.Column="7" x:Name="KeyN" Content="N" Height="36" Width="36"/>
+                                <Button Grid.Row="4" Grid.Column="8" x:Name="KeyM" Content="M" Height="36" Width="36"/>
+                                <Button Grid.Row="4" Grid.Column="9" x:Name="KeyComma" Content="," Height="36" Width="36"/>
+                                <Button Grid.Row="4" Grid.Column="11" x:Name="KeyPeriod" Content="." Height="36" Width="36"/>
+                                <Button Grid.Row="4" Grid.Column="12" x:Name="KeySlash" Content="/" Height="36" Width="36"/>
+                                <Button Grid.Row="4" Grid.Column="13" x:Name="KeyRShift" Content="Shift" Height="36" Width="36"/>
+                                <!-- Keep RShift wider? Try 1 -->
+                                <Button Grid.Row="4" Grid.Column="15" x:Name="KeyUp" Content="↑"/>
+                                <Button Grid.Row="4" Grid.Column="16" x:Name="KeyNum1" Content="1"/>
+                                <Button Grid.Row="4" Grid.Column="17" x:Name="KeyNum2" Content="2"/>
+                                <Button Grid.Row="4" Grid.Column="18" x:Name="KeyNum3" Content="3"/>
+                                <!-- Standard size -->
+
+                                <!-- Row 5 -->
+                                <Button Grid.Row="5" x:Name="KeyLCtrl" Content="Ctrl"/>
+                                <!-- Standard size -->
+                                <Button Grid.Row="5" Grid.Column="1" x:Name="KeyLWin" Content="Win"/>
+                                <Button Grid.Row="5" Grid.Column="2" x:Name="KeyLAlt" Content="Alt"/>
+                                <!-- Spacebar: Use specific style, span multiple columns -->
+                                <Button Grid.Row="5" Grid.Column="3" Grid.ColumnSpan="6" x:Name="KeySpace" Content="Space" Style="{StaticResource SpacebarStyle}" Margin="1,1,1,1"/>
+                                <Button Grid.Row="5" Grid.Column="9" x:Name="KeyRAlt" Content="Alt"/>
+                                <Button Grid.Row="5" Grid.Column="11" x:Name="KeyRWin" Content="Win"/>
+                                <Button Grid.Row="5" Grid.Column="12" x:Name="KeyMenu" Content="Menu" Click="KeyMenu_Click"/>
+                                <Button Grid.Row="5" Grid.Column="13" x:Name="KeyRCtrl" Content="Ctrl"/>
+                                <!-- Standard size -->
+                                <Button Grid.Row="5" Grid.Column="14" x:Name="KeyLeft" Content="←"/>
+                                <Button Grid.Row="5" Grid.Column="15" x:Name="KeyDown" Content="↓"/>
+                                <Button Grid.Row="5" Grid.Column="16" x:Name="KeyRight" Content="→"/>
+                                <Button Grid.Row="5" Grid.Column="17" x:Name="KeyNum0" Content="0"/>
+                                <!-- Make Num0 standard size too -->
+                                <Button Grid.Row="5" Grid.Column="18" x:Name="KeyNumDecimal" Content="."/>
+
+                            </Grid>
+                        </Border>
+
+                        <!-- Mouse Area -->
+                        <Border Grid.Column="1" Margin="5"
+                                Background="{StaticResource PrimaryBackgroundColor}"
+                                BorderBrush="{StaticResource AccentColorBrush}"
+                                BorderThickness="1" CornerRadius="3">
+                            <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Height="202" Width="187">
+                                <!-- Outline -->
+                                <Path x:Name="MouseBackgroundOutline"
+                                      Data="M70,10 C30,10 10,50 10,105 10,160 30,200 70,200 C110,200 130,160 130,105 C130,50 110,10 70,10 Z"
+                                      Fill="{StaticResource TextDisabledColorBrush}"
+                                      Stroke="{StaticResource BorderColorBrush}"
+                                      StrokeThickness="1.5" Stretch="Fill" Margin="36,1,40,-1"/>
+                                <!-- Button layout -->
+                                <Grid x:Name="MouseButtonsGrid"
+                                      Width="167" Height="200"
+                                      HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <Grid.Resources>
+                                        <!-- Geometries for the colored overlay shapes -->
+                                        <PathGeometry x:Key="LMB_OverlayShape" Figures="M15,100 L15,30 C15,15 30,15 45,15 L65,15 L65,100 Z"/>
+                                        <PathGeometry x:Key="RMB_OverlayShape" Figures="M75,15 L95,15 C110,15 125,15 125,30 L125,100 L75,100 Z"/>
+                                        <PathGeometry x:Key="ScrollClick_OverlayShape" Figures="M66,40 h8 v20 h-8 Z"/>
+                                        <!-- Central Green Rectangle -->
+                                        <!-- Scroll indicator shapes (chevrons) -->
+                                        <PathGeometry x:Key="ScrollUpChevrons" Figures="M67,35 L70,30 L73,35 M67,28 L70,23 L73,28"/>
+                                        <PathGeometry x:Key="ScrollDownChevrons" Figures="M67,65 L70,70 L73,65 M67,72 L70,77 L73,72"/>
+
+                                        <!-- Styles for underlying buttons (now transparent) -->
+                                        <Style TargetType="Button" x:Key="StandardMouseButtonStyle" BasedOn="{StaticResource SmallIconButton}">
+                                            <Setter Property="Margin" Value="0"/>
+                                            <!-- Minimal margin -->
+                                            <Setter Property="MinWidth" Value="0"/>
+                                            <Setter Property="MinHeight" Value="0"/>
+                                            <Setter Property="Height" Value="Auto"/>
+                                            <Setter Property="Width" Value="Auto"/>
+                                            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                                            <Setter Property="VerticalAlignment" Value="Stretch"/>
+                                            <Setter Property="Background" Value="Transparent"/>
+                                            <!-- Make transparent -->
+                                            <Setter Property="BorderBrush" Value="Transparent"/>
+                                            <Setter Property="BorderThickness" Value="0"/>
+                                            <Setter Property="Foreground" Value="Transparent"/>
+                                            <!-- Hide text like LMB/RMB -->
+                                            <!-- Optional: Adjust hover/pressed styles if needed -->
+                                            <Style.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Background" Value="#44FFFFFF"/>
+                                                    <!-- Subtle white highlight -->
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                        <Style TargetType="Button" x:Key="ScrollIndicatorButtonStyle" BasedOn="{StaticResource SmallIconButton}">
+                                            <Setter Property="Margin" Value="0"/>
+                                            <Setter Property="MinWidth" Value="0"/>
+                                            <Setter Property="MinHeight" Value="0"/>
+                                            <Setter Property="Width" Value="Auto"/>
+                                            <Setter Property="Height" Value="Auto"/>
+                                            <Setter Property="FontSize" Value="10"/>
+                                            <Setter Property="Padding" Value="0"/>
+                                            <Setter Property="Background" Value="Transparent"/>
+                                            <!-- Make transparent -->
+                                            <Setter Property="BorderBrush" Value="Transparent"/>
+                                            <Setter Property="BorderThickness" Value="0"/>
+                                            <Setter Property="Foreground" Value="Transparent"/>
+                                            <!-- Hide arrow text -->
+                                            <Style.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Background" Value="#44FFFFFF"/>
+                                                    <!-- Subtle white highlight -->
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+
+                                        <!-- New Style for Visible Side Buttons -->
+                                        <Style TargetType="Button" x:Key="SideMouseButtonSyle" BasedOn="{StaticResource StandardMouseButtonStyle}">
+                                            <!-- Override transparency -->
+                                            <Setter Property="Background" Value="{StaticResource SecondaryBackgroundColor}"/>
+                                            <Setter Property="Foreground" Value="{StaticResource TextPrimaryColorBrush}"/>
+                                            <Setter Property="BorderBrush" Value="{StaticResource BorderColorBrush}"/>
+                                            <Setter Property="BorderThickness" Value="1"/>
+                                            <!-- Inherit other properties like size/margin from StandardMouseButtonStyle -->
+                                        </Style>
+                                    </Grid.Resources>
+
+                                    <Grid.RowDefinitions>
+                                        <!-- Adjusted rows slightly -->
+                                        <RowDefinition Height="0.55*"/>
+                                        <!-- Main button area -->
+                                        <RowDefinition Height="0.45*"/>
+                                        <!-- Side button area -->
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <!-- Revert to single Width definitions -->
+                                        <ColumnDefinition Width="0.2*"/>
+                                        <!-- Side button area -->
+                                        <ColumnDefinition Width="0.3*"/>
+                                        <!-- LMB -->
+                                        <ColumnDefinition Width="Auto"/>
+                                        <!-- Scroll wheel -->
+                                        <ColumnDefinition Width="0.3*"/>
+                                        <!-- RMB -->
+                                        <ColumnDefinition Width="0.2*"/>
+                                        <!-- Empty spacer -->
+                                    </Grid.ColumnDefinitions>
+
+                                    <!-- Base Buttons (Transparent, for interaction) - Adjust layout to match overlays -->
+                                    <Button x:Name="MouseLMB" Grid.Row="0" Grid.Column="1" Style="{StaticResource StandardMouseButtonStyle}" ToolTip="Left Mouse Button"/>
+                                    <!-- Stretches to fill Col 1 -->
+                                    <Button x:Name="MouseRMB" Grid.Row="0" Grid.Column="3" Style="{StaticResource StandardMouseButtonStyle}" ToolTip="Right Mouse Button"/>
+                                    <!-- Stretches to fill Col 3 -->
+
+                                    <!-- Scroll Buttons need careful vertical alignment -->
+                                    <Grid Grid.Row="0" Grid.Column="2" >
+                                        <!-- Container for scroll buttons -->
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="*"/>
+                                            <!-- Scroll Up Area -->
+                                            <RowDefinition Height="Auto"/>
+                                            <!-- Click Area -->
+                                            <RowDefinition Height="*"/>
+                                            <!-- Scroll Down Area -->
+                                        </Grid.RowDefinitions>
+                                        <!-- Scroll Up Button fills top part -->
+                                        <Button x:Name="MouseScrollUp" Grid.Row="0" Style="{StaticResource ScrollIndicatorButtonStyle}" ToolTip="Scroll Up" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+                                        <!-- Scroll Click Button centered -->
+                                        <Button x:Name="MouseScrollClick" Grid.Row="1" Style="{StaticResource StandardMouseButtonStyle}" ToolTip="Scroll Wheel Click" Width="15" Height="25" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        <!-- Scroll Down Button fills bottom part -->
+                                        <Button x:Name="MouseScrollDown" Grid.Row="2" Style="{StaticResource ScrollIndicatorButtonStyle}" ToolTip="Scroll Down" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+                                    </Grid>
+
+                                    <!-- Side buttons - Layout seems okay -->
+                                    <StackPanel Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" VerticalAlignment="Center" Margin="0,0,5,0">
+                                        <Button x:Name="MouseMB4" Content="4" Style="{StaticResource SideMouseButtonSyle}" ToolTip="Mouse Button 4" Margin="0,0,0,5" Width="25" Height="30" Click="MouseMB4_Click"/>
+                                        <Button x:Name="MouseMB5" Content="5" Style="{StaticResource SideMouseButtonSyle}" ToolTip="Mouse Button 5" Width="25" Height="30"/>
+                                    </StackPanel>
+
+                                    <!-- Visual Overlay Paths (On Top) -->
+                                    <Path Grid.Row="0" Grid.Column="1" Data="{StaticResource LMB_OverlayShape}" Fill="{StaticResource MouseLMBColor}" Stretch="Fill" IsHitTestVisible="False" Margin="0,0,2,0"/>
+                                    <Path Grid.Row="0" Grid.Column="3" Data="{StaticResource RMB_OverlayShape}" Fill="{StaticResource MouseRMBColor}" Stretch="Fill" IsHitTestVisible="False" Margin="2,0,0,0"/>
+                                    <Path Grid.Column="2" Grid.Row="0" Data="{StaticResource ScrollClick_OverlayShape}" Fill="{StaticResource MouseScrollClickColor}" Width="10" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="Fill" IsHitTestVisible="False"/>
+                                    <Path Grid.Row="0" Grid.Column="2" Data="{StaticResource ScrollUpChevrons}" Stroke="{StaticResource MouseScrollUpColor}" StrokeThickness="2" VerticalAlignment="Top" Margin="0,12,0,0" HorizontalAlignment="Center" IsHitTestVisible="False" Height="14" Width="14" Stretch="Fill"/>
+                                    <Path Grid.Row="0" Grid.Column="2" Data="{StaticResource ScrollDownChevrons}" Stroke="{StaticResource MouseScrollDownColor}" StrokeThickness="2" VerticalAlignment="Bottom" Margin="0,0,0,10" HorizontalAlignment="Center" IsHitTestVisible="False" Height="14" Width="14" Stretch="Fill"/>
+
+                                </Grid>
+                            </Grid>
+                        </Border>
+                    </Grid>
+                </Border>
+
+                <Grid Grid.Row="2" MinHeight="100" Margin="10,5,10,10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                            <TextBlock Text="Driver" Foreground="{StaticResource TextPrimaryColorBrush}" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                            <ToggleButton x:Name="DriverToggle" Style="{StaticResource SwitchToggleButtonStyle}" IsChecked="True" Checked="DriverToggle_Checked" Unchecked="DriverToggle_Unchecked" ToolTip="Driver Status"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
+                            <TextBlock Text="Snap to window" Foreground="{StaticResource TextPrimaryColorBrush}" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                            <ToggleButton x:Name="SnapToggle" Style="{StaticResource SwitchToggleButtonStyle}" IsChecked="False" Checked="SnapToggle_Checked" Unchecked="SnapToggle_Unchecked" ToolTip="Snap to Window"/>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <Button x:Name="CenterRedButton" Grid.Column="1" Style="{StaticResource BaseButtonStyle}" Background="{StaticResource AccentColorBrush}" Width="80" Height="30" HorizontalAlignment="Left" VerticalAlignment="Center" Click="CenterRedButton_Click" Margin="395,0,0,0">
+                        <Rectangle Fill="{StaticResource PrimaryBackgroundColor}" Width="15" Height="15"/>
+                    </Button>
+                </Grid>
+
+            </Grid>
+        </Border>
+    </Grid>
+</Window> 
