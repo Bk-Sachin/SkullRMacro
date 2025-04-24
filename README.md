@@ -21,9 +21,9 @@
 
 ## 📸 Screenshots
 
-| Keyboard View | Mouse View |
+| Home View | Editor View |
 |---------------|------------|
-| ![Main UI](./assets/editor.png) | ![Editor UI](./assets/editor.png) |
+| ![Main UI](./assets/home.png) | ![Editor UI](./assets/editor.png) |
 
 ---
 
