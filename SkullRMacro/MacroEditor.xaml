@@ -223,6 +223,67 @@
             <Setter Property="HorizontalAlignment" Value="Stretch"/>
         </Style>
 
+        <Style TargetType="TextBlock">
+             <Setter Property="Foreground" Value="LightGray"/>
+        </Style>
+        <!-- Converter to invert boolean -->
+        <local:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
+
+        <!-- ListView Selection Colors -->
+        <SolidColorBrush x:Key="ListViewItemSelectedBackgroundBrush" Color="#FF550000"/> <!-- Dark Red -->
+        <SolidColorBrush x:Key="ListViewItemFocusBorderBrush" Color="#FFFF4500"/> <!-- OrangeRed -->
+
+        <!-- Style for ListViewItems -->
+        <Style x:Key="MacroListViewItemStyle" TargetType="ListViewItem">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{StaticResource TextPrimaryColorBrush}"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="3"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="Transparent"/> <!-- Transparent by default -->
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListViewItem">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                Padding="{TemplateBinding Padding}"
+                                SnapsToDevicePixels="true">
+                            <GridViewRowPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                                  SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="{StaticResource ListViewItemSelectedBackgroundBrush}"/>
+                    <Setter Property="Foreground" Value="White"/>
+                </Trigger>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="BorderBrush" Value="{StaticResource AccentColorBrush}"/>
+                </Trigger>
+                <MultiTrigger>
+                    <MultiTrigger.Conditions>
+                        <Condition Property="IsSelected" Value="True"/>
+                        <Condition Property="Selector.IsSelectionActive" Value="False"/>
+                    </MultiTrigger.Conditions>
+                    <Setter Property="Background" Value="#FF444444"/> <!-- Different background when focus is lost -->
+                    <Setter Property="Foreground" Value="LightGray"/>
+                </MultiTrigger>
+                <!-- Trigger for Focus Visual -->
+                <Trigger Property="IsKeyboardFocused" Value="True">
+                    <Setter Property="BorderBrush" Value="{StaticResource ListViewItemFocusBorderBrush}"/>
+                    <Setter Property="BorderThickness" Value="1"/>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Foreground" Value="{StaticResource TextDisabledColorBrush}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
     </Window.Resources>
 
     <Grid Background="{StaticResource PrimaryBackgroundColor}">
@@ -242,7 +303,7 @@
             <ToolBar Background="{StaticResource PrimaryBackgroundColor}" Foreground="WhiteSmoke" Band="1" BandIndex="1">
                  <Button Foreground="WhiteSmoke" x:Name="UndoButton" Content="↩" ToolTip="Undo"/>
                  <Button Foreground="WhiteSmoke" x:Name="RedoButton" Content="↪" ToolTip="Redo"/>
-                 <Button Foreground="WhiteSmoke" x:Name="SaveButton" Content="💾" ToolTip="Save"/>
+                 <Button Foreground="WhiteSmoke" x:Name="SaveButton" Content="💾" ToolTip="Save" Click="SaveButton_Click"/>
                  <Separator/>
                  <Button Foreground="WhiteSmoke" x:Name="CutButton" Content="Cut" ToolTip="Cut"/>
                  <Button Foreground="WhiteSmoke" x:Name="CopyButton" Content="Copy" ToolTip="Copy"/>
@@ -255,8 +316,8 @@
                  <Button Foreground="WhiteSmoke" x:Name="MoveUpButton" Content="↑" ToolTip="Move Up"/>
                  <Button Foreground="WhiteSmoke" x:Name="MoveDownButton" Content="↓" ToolTip="Move Down"/>
                  <Separator/>
-                 <Button Foreground="WhiteSmoke" x:Name="RecordButton" Content="● Rec" ToolTip="Record Macro"/>
-                 <Button Foreground="WhiteSmoke" x:Name="StopButton" Content="■ Stop" ToolTip="Stop Recording"/>
+                 <Button Foreground="WhiteSmoke" x:Name="RecordButton" Content="● Rec" ToolTip="Record Macro" Click="RecordButton_Click"/>
+                 <Button Foreground="WhiteSmoke" x:Name="StopButton" Content="■ Stop" ToolTip="Stop Recording" Click="StopButton_Click"/>
                  <Separator/>
                  <Button Foreground="WhiteSmoke" x:Name="SearchButton" Content="🔍 Search" ToolTip="Search Steps"/>
             </ToolBar>
@@ -267,33 +328,136 @@
              <TextBlock Text="[Future Macro List Area (TreeView)]" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{StaticResource TextDisabledColorBrush}"/>
         </Border>
 
-        <!-- Center Content Area -->
+        <!-- Center Content Area: Replaced TextBlock with ListView -->
          <Border Grid.Row="1" Grid.Column="1" Background="{StaticResource SecondaryBackgroundColor}" Margin="0,0,5,5" BorderBrush="{StaticResource BorderColorBrush}" BorderThickness="0,0,1,1">
-             <TextBlock Text="[Macro Content Area]" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{StaticResource TextDisabledColorBrush}"/>
+             <!-- <TextBlock Text="[Macro Content Area]" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{StaticResource TextDisabledColorBrush}"/> -->
+             <ListView x:Name="eventTimeline" 
+                       ItemsSource="{Binding MacroSteps}" 
+                       Background="{StaticResource SecondaryBackgroundColor}"
+                       BorderThickness="0"
+                       Foreground="{StaticResource TextPrimaryColorBrush}"
+                       ItemContainerStyle="{StaticResource MacroListViewItemStyle}">
+                 <ListView.ContextMenu>
+                     <ContextMenu>
+                         <MenuItem Header="Add comment" Click="CommentButton_Click">
+                             <MenuItem.Icon>
+                                 <TextBlock Text="✎" FontSize="14"/>
+                             </MenuItem.Icon>
+                         </MenuItem>
+                         <Separator/>
+                         <MenuItem Header="Offset all delays" Click="OffsetDelaysMenuItem_Click">
+                             <MenuItem.Icon>
+                                 <TextBlock Text="⏱" FontSize="14"/>
+                             </MenuItem.Icon>
+                         </MenuItem>
+                         <MenuItem Header="Offset all coordinates" Click="OffsetCoordinatesMenuItem_Click">
+                             <MenuItem.Icon>
+                                 <TextBlock Text="📍" FontSize="14"/>
+                             </MenuItem.Icon>
+                         </MenuItem>
+                         <Separator/>
+                         <MenuItem Header="Copy" Click="CopyButton_Click">
+                             <MenuItem.Icon>
+                                 <TextBlock Text="📋" FontSize="14"/>
+                             </MenuItem.Icon>
+                         </MenuItem>
+                         <MenuItem Header="Cut" Click="CutButton_Click">
+                             <MenuItem.Icon>
+                                 <TextBlock Text="✂" FontSize="14"/>
+                             </MenuItem.Icon>
+                         </MenuItem>
+                         <Separator/>
+                         <MenuItem Header="Move up" Click="MoveUpButton_Click">
+                             <MenuItem.Icon>
+                                 <TextBlock Text="↑" FontSize="14"/>
+                             </MenuItem.Icon>
+                         </MenuItem>
+                         <MenuItem Header="Move down" Click="MoveDownButton_Click">
+                             <MenuItem.Icon>
+                                 <TextBlock Text="↓" FontSize="14"/>
+                             </MenuItem.Icon>
+                         </MenuItem>
+                         <Separator/>
+                         <MenuItem Header="Undo" Click="UndoButton_Click">
+                             <MenuItem.Icon>
+                                 <TextBlock Text="↩" FontSize="14"/>
+                             </MenuItem.Icon>
+                         </MenuItem>
+                         <MenuItem Header="Redo" Click="RedoButton_Click">
+                             <MenuItem.Icon>
+                                 <TextBlock Text="↪" FontSize="14"/>
+                             </MenuItem.Icon>
+                         </MenuItem>
+                         <Separator/>
+                         <MenuItem Header="Remove all delays" Click="RemoveAllDelaysMenuItem_Click">
+                             <MenuItem.Icon>
+                                 <TextBlock Text="⌛" FontSize="14"/>
+                             </MenuItem.Icon>
+                         </MenuItem>
+                         <MenuItem Header="Delete" Click="DeleteStepButton_Click">
+                             <MenuItem.Icon>
+                                 <TextBlock Text="🗑" FontSize="14"/>
+                             </MenuItem.Icon>
+                         </MenuItem>
+                         <MenuItem Header="Clear all" Click="ClearAllMenuItem_Click">
+                             <MenuItem.Icon>
+                                 <TextBlock Text="🧹" FontSize="14"/>
+                             </MenuItem.Icon>
+                         </MenuItem>
+                     </ContextMenu>
+                 </ListView.ContextMenu>
+                 <ListView.View>
+                     <GridView AllowsColumnReorder="True">
+                         <GridViewColumn Header="Step" Width="50" DisplayMemberBinding="{Binding StepNumber}"/>
+                         <GridViewColumn Header="Action" Width="400" DisplayMemberBinding="{Binding ActionDescription}"/>
+                         <GridViewColumn Header="Comment" Width="200" DisplayMemberBinding="{Binding Comment}"/>
+                     </GridView>
+                 </ListView.View>
+             </ListView>
          </Border>
 
         <!-- Right Vertical Toolbar -->
         <Border Grid.Row="0" Grid.RowSpan="2" Grid.Column="2" Background="{StaticResource PrimaryBackgroundColor}" BorderBrush="{StaticResource BorderColorBrush}" BorderThickness="1,0,0,0" Padding="0,5,0,0">
              <StackPanel Orientation="Vertical" VerticalAlignment="Top" Margin="5">
-                 <Button Foreground="WhiteSmoke" x:Name="TimeButton" Content="🕒" ToolTip="Add Delay" Style="{StaticResource SmallIconButton}" Margin="2"/>
-                 <Button Foreground="WhiteSmoke" x:Name="RepeatButton" Content="🔄" ToolTip="Set Operation Mode" Style="{StaticResource SmallIconButton}" Margin="2"/>
-                 <Button Foreground="WhiteSmoke" x:Name="GotoLineButton" Content="↵" ToolTip="Go to Line" Style="{StaticResource SmallIconButton}" Margin="2"/>
-                 <Button Foreground="WhiteSmoke" x:Name="AddLoopButton" Content="➿" ToolTip="Add Loop" Style="{StaticResource SmallIconButton}" Margin="2"/>
-                 <Button Foreground="WhiteSmoke" x:Name="CommentButton" Content="💬" ToolTip="Add Comment" Style="{StaticResource SmallIconButton}" Margin="2"/>
-                 <Button Foreground="WhiteSmoke" x:Name="ColorButton" Content="💧" ToolTip="Add Color Definition" Style="{StaticResource SmallIconButton}" Margin="2"/>
-                 <Button Foreground="WhiteSmoke" x:Name="LangChangeButton" Content="A文" ToolTip="Add Keyboard Language Change" Style="{StaticResource SmallIconButton}" Margin="2"/>
-                 <Button Foreground="WhiteSmoke" x:Name="SetVariableButton" Content="[=]" ToolTip="Set Variable" Style="{StaticResource SmallIconButton}" Margin="2"/>
+                 <Button Foreground="WhiteSmoke" x:Name="TimeButton" Content="⏱️" ToolTip="Set Time/Delay" Style="{StaticResource SmallIconButton}" Margin="2" Click="TimeButton_Click"/>
+                 <Button Foreground="WhiteSmoke" x:Name="RepeatButton" Content="🔁" ToolTip="Set Operation Mode" Style="{StaticResource SmallIconButton}" Margin="2" Click="RepeatButton_Click">
+                     <Button.ContextMenu>
+                         <ContextMenu>
+                             <MenuItem Header="No repetitions" Tag="RunOnce" Click="PlaybackModeMenuItem_Click">
+                                 <MenuItem.Icon>
+                                     <TextBlock Text="🚫" FontSize="14"/>
+                                 </MenuItem.Icon>
+                             </MenuItem>
+                             <MenuItem Header="Press to start, release to stop" Tag="HoldToRun" Click="PlaybackModeMenuItem_Click">
+                                 <MenuItem.Icon>
+                                     <TextBlock Text="⏯️" FontSize="14"/>
+                                 </MenuItem.Icon>
+                             </MenuItem>
+                             <MenuItem Header="Press to start, press again to stop" Tag="ToggleRun" Click="PlaybackModeMenuItem_Click">
+                                 <MenuItem.Icon>
+                                     <TextBlock Text="🔄" FontSize="14"/>
+                                 </MenuItem.Icon>
+                             </MenuItem>
+                         </ContextMenu>
+                     </Button.ContextMenu>
+                 </Button>
+                 <Button Foreground="WhiteSmoke" x:Name="GotoLineButton" Content="⤵️" ToolTip="Go to Line" Style="{StaticResource SmallIconButton}" Margin="2" Click="GotoLineButton_Click"/>
+                 <Button Foreground="WhiteSmoke" x:Name="AddLoopButton" Content="➿" ToolTip="Add Loop" Style="{StaticResource SmallIconButton}" Margin="2" Click="AddLoopButton_Click"/>
+                 <Button Foreground="WhiteSmoke" x:Name="CommentButton" Content="💬" ToolTip="Add Comment" Style="{StaticResource SmallIconButton}" Margin="2" Click="CommentButton_Click"/>
+                 <Button Foreground="WhiteSmoke" x:Name="ColorButton" Content="💧" ToolTip="Add Color Definition" Style="{StaticResource SmallIconButton}" Margin="2" Click="ColorButton_Click"/>
+                 <Button Foreground="WhiteSmoke" x:Name="LangChangeButton" Content="A文" ToolTip="Add Keyboard Language Change" Style="{StaticResource SmallIconButton}" Margin="2" Click="LangChangeButton_Click"/>
+                 <Button Foreground="WhiteSmoke" x:Name="SetVariableButton" Content="[=]" ToolTip="Set Variable" Style="{StaticResource SmallIconButton}" Margin="2" Click="SetVariableButton_Click"/>
              </StackPanel>
         </Border>
 
         <!-- NEW Bottom-Left Toolbar -->
         <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Horizontal" Background="{StaticResource PrimaryBackgroundColor}" VerticalAlignment="Bottom" Margin="5,0,5,5">
-             <Button x:Name="DeleteMacroButton" ToolTip="Delete file or folder" Style="{StaticResource SmallIconButton}" Content="🗑" Margin="2,0" Foreground="WhiteSmoke"/>
-             <Button x:Name="AddMacroButton" ToolTip="Create file or folder" Style="{StaticResource SmallIconButton}" Content="➕" Margin="2,0" Foreground="WhiteSmoke"/>
-             <Button x:Name="RenameMacroButton" ToolTip="Rename file or folder" Style="{StaticResource SmallIconButton}" Content="✎" Margin="2,0" Foreground="WhiteSmoke"/>
-             <Button x:Name="InfoMacroButton" ToolTip="File info" Style="{StaticResource SmallIconButton}" Content="ℹ" Margin="2,0" Foreground="WhiteSmoke"/>
-             <Button x:Name="SaveAsMacroButton" ToolTip="Save As" Style="{StaticResource SmallIconButton}" Content="💾⇩" Margin="2,0" Foreground="WhiteSmoke"/>
-             <Button x:Name="OpenMacroButton" ToolTip="Open file" Style="{StaticResource SmallIconButton}" Content="📂" Margin="2,0" Foreground="WhiteSmoke"/>
+             <Button x:Name="DeleteMacroButton" ToolTip="Delete file or folder" Style="{StaticResource SmallIconButton}" Content="🗑" Margin="2,0" Foreground="WhiteSmoke" Click="DeleteMacroButton_Click"/>
+             <Button x:Name="AddMacroButton" ToolTip="Create file or folder" Style="{StaticResource SmallIconButton}" Content="➕" Margin="2,0" Foreground="WhiteSmoke" Click="AddMacroButton_Click"/>
+             <Button x:Name="RenameMacroButton" ToolTip="Rename file or folder" Style="{StaticResource SmallIconButton}" Content="✎" Margin="2,0" Foreground="WhiteSmoke" Click="RenameMacroButton_Click"/>
+             <Button x:Name="InfoMacroButton" ToolTip="File info" Style="{StaticResource SmallIconButton}" Content="ℹ" Margin="2,0" Foreground="WhiteSmoke" Click="InfoMacroButton_Click"/>
+             <Button x:Name="SaveAsMacroButton" ToolTip="Save As" Style="{StaticResource SmallIconButton}" Content="💾⇩" Margin="2,0" Foreground="WhiteSmoke" Click="SaveAsMacroButton_Click"/>
+             <Button x:Name="OpenMacroButton" ToolTip="Open file" Style="{StaticResource SmallIconButton}" Content="📂" Margin="2,0" Foreground="WhiteSmoke" Click="OpenMacroButton_Click"/>
         </StackPanel>
 
         <!-- Bottom Panel: Keyboard/Mouse + Buttons -->
@@ -434,7 +598,7 @@
                         <Button Style="{StaticResource SmallKeyboardButtonStyle}" Grid.Row="4" Grid.Column="9" x:Name="KeyPeriod" Content="."/>
                         <Button Style="{StaticResource SmallKeyboardButtonStyle}" Grid.Row="4" Grid.Column="10" x:Name="KeySlash" Content="/"/>
                         <Button Style="{StaticResource SmallKeyboardButtonStyle}" Grid.Row="4" Grid.Column="11" x:Name="KeyRShift" Content="Sh" HorizontalAlignment="Stretch" Margin="2,0,0,0"/>
-                        <Button Style="{StaticResource SmallKeyboardButtonStyle}" Grid.Row="4" Grid.Column="13" x:Name="KeyUp" Content="↑"/>
+                        <Button Style="{StaticResource SmallKeyboardButtonStyle}" Grid.Row="4" Grid.Column="13" x:Name="KeyUpButton" Content="↑"/>
                         <Button Style="{StaticResource SmallKeyboardButtonStyle}" Grid.Row="4" Grid.Column="15" x:Name="KeyNum1" Content="1"/>
                         <Button Style="{StaticResource SmallKeyboardButtonStyle}" Grid.Row="4" Grid.Column="16" x:Name="KeyNum2" Content="2"/>
                         <Button Style="{StaticResource SmallKeyboardButtonStyle}" Grid.Row="4" Grid.Column="17" x:Name="KeyNum3" Content="3"/>
@@ -449,7 +613,7 @@
                         <Button Style="{StaticResource SmallKeyboardButtonStyle}" Grid.Row="5" Grid.Column="10" x:Name="KeyMenu" Content="Mn"/>
                         <Button Style="{StaticResource SmallKeyboardButtonStyle}" Grid.Row="5" Grid.Column="11" x:Name="KeyRCtrl" Content="Ct" HorizontalAlignment="Stretch" Margin="2,0,0,0"/>
                         <Button Style="{StaticResource SmallKeyboardButtonStyle}" Grid.Row="5" Grid.Column="12" x:Name="KeyLeft" Content="←"/>
-                        <Button Style="{StaticResource SmallKeyboardButtonStyle}" Grid.Row="5" Grid.Column="13" x:Name="KeyDown" Content="↓"/>
+                        <Button Style="{StaticResource SmallKeyboardButtonStyle}" Grid.Row="5" Grid.Column="13" x:Name="KeyDownButton" Content="↓"/>
                         <Button Style="{StaticResource SmallKeyboardButtonStyle}" Grid.Row="5" Grid.Column="15" x:Name="KeyRight" Content="→"/>
                         <Button Style="{StaticResource SmallKeyboardButtonStyle}" Grid.Row="5" Grid.Column="16" x:Name="KeyNum0" Content="0" HorizontalAlignment="Stretch" Margin="1,0,1,0"/>
                         <Button Style="{StaticResource SmallKeyboardButtonStyle}" Grid.Row="5" Grid.Column="17" x:Name="KeyNumDecimal" Content="."/>
@@ -509,7 +673,7 @@
 
              <!-- RELOCATED Bottom Buttons -->
             <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,5,5">
-                <Button x:Name="TestButton" Content="Test" Width="75" Margin="0,0,5,0"/>
+                <Button x:Name="TestButton" Content="Test" Width="75" Margin="0,0,5,0" Click="TestButton_Click"/>
                 <Button x:Name="CancelButton" Content="Cancel" Width="75" Margin="0,0,5,0" Click="CancelButton_Click"/>
                 <Button x:Name="OkButton" Content="Ok" Width="75" Margin="0,0,2,0" Click="OkButton_Click"/>
             </StackPanel>

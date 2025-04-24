@@ -550,7 +550,7 @@
                                 <Button Grid.Row="4" Grid.Column="12" x:Name="KeySlash" Content="/" Height="36" Width="36"/>
                                 <Button Grid.Row="4" Grid.Column="13" x:Name="KeyRShift" Content="Shift" Height="36" Width="36"/>
                                 <!-- Keep RShift wider? Try 1 -->
-                                <Button Grid.Row="4" Grid.Column="15" x:Name="KeyUp" Content="↑"/>
+                                <Button Grid.Row="4" Grid.Column="15" x:Name="KeyUpButton" Content="↑"/>
                                 <Button Grid.Row="4" Grid.Column="16" x:Name="KeyNum1" Content="1"/>
                                 <Button Grid.Row="4" Grid.Column="17" x:Name="KeyNum2" Content="2"/>
                                 <Button Grid.Row="4" Grid.Column="18" x:Name="KeyNum3" Content="3"/>
@@ -569,7 +569,7 @@
                                 <Button Grid.Row="5" Grid.Column="13" x:Name="KeyRCtrl" Content="Ctrl"/>
                                 <!-- Standard size -->
                                 <Button Grid.Row="5" Grid.Column="14" x:Name="KeyLeft" Content="←"/>
-                                <Button Grid.Row="5" Grid.Column="15" x:Name="KeyDown" Content="↓"/>
+                                <Button Grid.Row="5" Grid.Column="15" x:Name="KeyDownButton" Content="↓"/>
                                 <Button Grid.Row="5" Grid.Column="16" x:Name="KeyRight" Content="→"/>
                                 <Button Grid.Row="5" Grid.Column="17" x:Name="KeyNum0" Content="0"/>
                                 <!-- Make Num0 standard size too -->

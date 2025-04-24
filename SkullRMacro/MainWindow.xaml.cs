@@ -12,6 +12,9 @@ using System.Runtime.InteropServices; // Required for WindowChrome workaround
 using System.Windows.Interop; // Required for WindowChrome workaround
 using System;
 
+// Add using statement for the C++/CLI wrapper namespace
+using SkullRMacroCLI;
+
 namespace SkullRMacro
 {
     /// <summary>
@@ -19,10 +22,41 @@ namespace SkullRMacro
     /// </summary>
     public partial class MainWindow : Window
     {
+        // Add the wrapper instance variable
+        private ManagedMacroCore? macroCoreWrapper;
+
         public MainWindow()
         {
             InitializeComponent();
+
+            // --- Initialize the Macro Core Wrapper ---
+            try
+            {
+                macroCoreWrapper = new ManagedMacroCore();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to initialize macro engine: {ex.Message}\n\nEnsure native components and dependencies (like nlohmann/json.hpp) are correctly built and accessible.", 
+                                "Initialization Error", 
+                                MessageBoxButton.OK, 
+                                MessageBoxImage.Error);
+                
+                // Optional: Close the window or disable functionality if core fails
+                // this.Close(); 
+                // Or disable buttons, etc.
+            }
+
+            // Ensure disposal on close
+            this.Closed += MainWindow_Closed;
+
             // SourceInitialized += MainWindow_SourceInitialized; // Optional: For advanced custom chrome handling
+        }
+
+        private void MainWindow_Closed(object? sender, EventArgs e)
+        {
+            // Dispose the wrapper when the window closes
+            macroCoreWrapper?.Dispose();
+            macroCoreWrapper = null; // Release the reference
         }
 
         // --- Custom Chrome / Window Behavior ---
@@ -74,8 +108,14 @@ namespace SkullRMacro
         private void EditorButton_Click(object sender, RoutedEventArgs e) { /* TODO */ }
         private void MacrosButton_Click(object sender, RoutedEventArgs e) 
         {
-             // Create and show the MacroEditor window as a dialog
-            MacroEditor macroEditorWindow = new MacroEditor();
+             // Ensure wrapper is initialized before opening editor
+             if (macroCoreWrapper == null) {
+                  MessageBox.Show("Macro engine is not initialized.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                  return;
+             }
+
+             // Create and show the MacroEditor window, passing the wrapper instance
+            MacroEditor macroEditorWindow = new MacroEditor(macroCoreWrapper); // Pass wrapper to constructor
             macroEditorWindow.Owner = this; // Optional: Set owner
             macroEditorWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner; // Optional: Center on owner
             macroEditorWindow.ShowDialog(); // Show as modal dialog
@@ -134,7 +174,7 @@ namespace SkullRMacro
             System.Diagnostics.Debug.WriteLine("Menu Key Clicked");
         }
 
-        private void MouseMB4_Click()
+        private void MouseMB4_Click(object sender, RoutedEventArgs e)
         {
 
         }

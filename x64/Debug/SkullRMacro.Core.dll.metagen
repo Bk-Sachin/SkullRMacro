@@ -1,0 +1,45 @@
+ImageRuntimeVersion: v4.0.30319
+Assembly SkullRMacro.Core, Version=1.0.*, Culture=Invariant Language (Invariant Country): 
+	hash=SHA1, flags=PublicKey
+Assembly mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089: 
+	hash=None, flags=None
+Assembly System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089: 
+	hash=None, flags=None
+Assembly System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089: 
+	hash=None, flags=None
+Assembly System.Xml, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089: 
+	hash=None, flags=None
+Class SkullRMacroCLI.ManagedMacroEvent: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(System.String, System.String, UInt32): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Properties:
+    UInt32 Time 'get set' IsLong : 
+    System.String Details 'get set' : 
+    System.String Type 'get set' : 
+  Methods:
+    get_Type(): PrivateScope, Public, HideBySig, SpecialName
+    set_Type(String): PrivateScope, Public, HideBySig, SpecialName
+    get_Details(): PrivateScope, Public, HideBySig, SpecialName
+    set_Details(String): PrivateScope, Public, HideBySig, SpecialName
+    get_Time(): PrivateScope, Public, HideBySig, SpecialName
+    set_Time(UInt32 IsLong): PrivateScope, Public, HideBySig, SpecialName
+Class SkullRMacroCLI.ManagedMacroCore: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Interfaces:
+    System.IDisposable
+  Methods:
+    StartRecording(): PrivateScope, Public, HideBySig
+    StopRecording(String): PrivateScope, Public, HideBySig
+    PlayMacro(String): PrivateScope, Public, HideBySig
+    SaveMacro(String): PrivateScope, Public, HideBySig
+    SetPlaybackMode(ManagedPlaybackMode): PrivateScope, Public, HideBySig
+    GetPlaybackMode(): PrivateScope, Public, HideBySig
+    GetMacroEvents(): PrivateScope, Public, HideBySig
+    SetRecordingSettings(Boolean(HasFieldMarshal), Boolean(HasFieldMarshal), Boolean(HasFieldMarshal), Boolean(HasFieldMarshal), Boolean(HasFieldMarshal)): PrivateScope, Public, HideBySig
+    Dispose(): PrivateScope, Public, Final, Virtual, HideBySig
+Struct SkullRMacroCLI.ManagedPlaybackMode: AutoLayout, AnsiClass, Class, Public, Sealed, BeforeFieldInit
+  :System.Enum
+  Fields:
+    Int32 value__ : Public, SpecialName, RTSpecialName
+    SkullRMacroCLI.ManagedPlaybackMode RunOnce = 0 : Public, Static, Literal, HasDefault
+    SkullRMacroCLI.ManagedPlaybackMode HoldToRun = 1 : Public, Static, Literal, HasDefault
+    SkullRMacroCLI.ManagedPlaybackMode ToggleRun = 2 : Public, Static, Literal, HasDefault

@@ -1,0 +1,58 @@
+# SkullRMacro – AI Development Context for Cursor
+
+## Project Overview
+This project is a macro automation software called SkullRMacro. The UI has already been designed and implemented, including:
+- Main Window UI
+- Macro Editor UI
+
+The current task is to implement core macro functionality using the existing UI components. The UI elements are in place and ready to be connected to real logic.
+
+## Current Scope (MVP)
+Only the following features are to be implemented right now:
+
+✅ Keyboard input recording (press/release)
+✅ Mouse input recording (clicks and movements)
+✅ Timeline-based playback of recorded inputs
+✅ Save/load macro files using `.amc` JSON format
+
+Leave the following features for future phases:
+
+🚫 Pixel-based color triggers  
+🚫 Image-based triggers using OpenCV  
+🚫 Lua scripting or any advanced automation logic  
+
+## File Format (.amc)
+Use the following JSON schema for macro files:
+
+```json
+{
+  "version": 1,
+  "events": [
+    { "type": "keyDown", "keyCode": 65, "time": 123 },
+    { "type": "mouseMove", "x": 300, "y": 200, "time": 125 },
+    { "type": "mouseClick", "button": "left", "state": "down", "time": 128 }
+  ]
+}
+```
+
+## UI Integration Instructions
+The UI components are annotated for AI. Match them to these functions:
+
+- `btnRecord` → `startRecording()`
+- `btnStop` → `stopRecording(const char* path)`
+- `btnPlay` → `playMacro(const char* path)`
+- `eventTimeline` → Displays macro events as a list or table
+
+## Codebase Expectations
+- Implement all logic in C++.
+- Use global input hooks for recording (e.g., `SetWindowsHookEx`).
+- Use `SendInput` or driver-backed IOCTL for playback.
+- Do NOT include pixel/image trigger code.
+- Focus only on ensuring recording/playback of macros via the UI.
+
+## AI Development Notes
+- Assume the UI is complete.
+- Your task is to implement only the backend functionality and hook it to the UI.
+- Maintain clean and testable code structure.
+
+This context should guide AI coding agents in Cursor to work directly off the existing UI and add only the required functionality with no errors.

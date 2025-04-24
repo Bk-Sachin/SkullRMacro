@@ -1,0 +1,8 @@
+﻿  pch.cpp
+  AssemblyInfo.cpp
+  MacroCore.cpp
+  ManagedMacroCore.cpp
+  Generating Code...
+  .NETFramework,Version=v4.7.2.AssemblyAttributes.cpp
+  AssemblyInfo.obj : MSIL module encountered; incremental linking is disabled for MSIL; performing full link
+  SkullRMacro.Core.vcxproj -> E:\Macro\UI\SkullRMacro\x64\Debug\SkullRMacro.Core.dll
