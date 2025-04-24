@@ -72,7 +72,24 @@ namespace SkullRMacro
         // Placeholders for top navigation buttons
         private void ProfileButton_Click(object sender, RoutedEventArgs e) { /* TODO */ }
         private void EditorButton_Click(object sender, RoutedEventArgs e) { /* TODO */ }
-        private void MacrosButton_Click(object sender, RoutedEventArgs e) { /* TODO */ }
+        private void MacrosButton_Click(object sender, RoutedEventArgs e) 
+        {
+             // Create and show the MacroEditor window as a dialog
+            MacroEditor macroEditorWindow = new MacroEditor();
+            macroEditorWindow.Owner = this; // Optional: Set owner
+            macroEditorWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner; // Optional: Center on owner
+            macroEditorWindow.ShowDialog(); // Show as modal dialog
+
+            // You can optionally check the DialogResult if the MacroEditor sets it (e.g., on OK/Cancel)
+            // if (macroEditorWindow.DialogResult == true)
+            // {
+            //     // Handle OK
+            // }
+            // else
+            // {
+            //     // Handle Cancel or close
+            // }
+        }
 
         // Placeholder for central red button
         private void CenterRedButton_Click(object sender, RoutedEventArgs e) { /* TODO */ }
