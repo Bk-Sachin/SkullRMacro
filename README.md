@@ -1,7 +1,7 @@
 # SkullRMacro 🎮🖱️
 **A powerful macro recording and playback tool for Windows. Supports keyboard & mouse automation, pixel/image triggers, and Lua scripting. Built in C#.**
 
-![UI Screenshot](./assets/main-ui.png)
+![UI Screenshot](./assets/home.png)
 
 ---
 
@@ -21,9 +21,9 @@
 
 ## 📸 Screenshots
 
-| Keyboard View | Mouse View |
+| Home View | Editor View |
 |---------------|------------|
-| ![Keyboard UI](./assets/keyboard.png) | ![Mouse UI](./assets/mouse.png) |
+| ![Main UI](./assets/home.png) | ![Editor UI](./assets/editor.png) |
 
 ---
 
